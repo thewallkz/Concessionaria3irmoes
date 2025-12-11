@@ -1,4 +1,4 @@
-# Concessionária 3 Irmãos
+# Concessionária 3 Irmoes
 
 ## Sobre o Projeto
 Esta é uma aplicação web desenvolvida utilizando o padrão **MVC** em **ASP.NET Core .NET 8**. O projeto foi realizado no âmbito da disciplina de Desenvolvimento Web, simulando o sistema de gestão de uma concessionária de veículos.
