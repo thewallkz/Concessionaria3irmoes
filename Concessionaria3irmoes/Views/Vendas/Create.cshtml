@@ -1,0 +1,78 @@
+@model Concessionaria3irmoes.Models.VendaModel
+
+@{
+    ViewData["Title"] = "Registrar Nova Venda";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
+                    <h2 class="mb-0 display-6"><i class="bi bi-cart-fill me-2"></i> Nova Transação de Venda</h2>
+                </div>
+                
+                <div class="card-body p-5">
+                    
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="ClienteId" class="form-label fs-5 fw-bold text-muted">Cliente Comprador</label>
+                           <select asp-for="ClienteId" class="form-select form-select-lg" asp-items="ViewBag.ClienteId" required>
+                                <option value="" selected disabled>-- Selecione um Cliente --</option>
+                            </select>
+                            <span asp-validation-for="ClienteId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="VeiculoId" class="form-label fs-5 fw-bold text-muted">Veículo Vendido</label>
+                            <select asp-for="VeiculoId" class="form-select form-select-lg" asp-items="ViewBag.VeiculoId" required>
+                                <option value="" selected disabled>-- Selecione um Veículo --</option>
+                            </select>
+                            <span asp-validation-for="VeiculoId" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ValorFinal" class="control-label fw-bold">Valor Final da Venda (R$)</label>
+                                    <input asp-for="ValorFinal" class="form-control form-control-lg" placeholder="Ex: 75000,00" required/>
+                                    <span asp-validation-for="ValorFinal" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DataVenda" class="control-label fw-bold">Data da Transação</label>
+                                    <input asp-for="DataVenda" class="form-control form-control-lg" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" required/>
+                                    <span asp-validation-for="DataVenda" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mt-5 d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg text-uppercase fw-bold shadow">
+                                <i class="bi bi-check-circle-fill me-2"></i> Registrar Venda
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-center bg-light py-3 rounded-bottom-4">
+                    <a asp-action="Index" class="text-secondary"><i class="bi bi-arrow-left-circle-fill me-1"></i> Voltar para o Histórico de Vendas</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+        Nenhuma venda registrada até o momento. Clique no botão acima para adicionar a primeira venda à carteira.
+        </div>
+    }

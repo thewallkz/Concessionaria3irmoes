@@ -1,0 +1,54 @@
+@model IEnumerable<Concessionaria3irmoes.Models.VeiculoModel>
+
+@{
+    ViewData["Title"] = "Veículos Disponíveis";
+}
+
+<h1>Veículos Disponíveis</h1>
+
+@* --- SEGURANÇA: Botão de cadastro visível apenas para Admins --- *@
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-lg btn-primary">➕ Novo Veículo</a>
+    </p>
+}
+
+<table class="table table-hover table-striped shadow-sm">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Modelo)</th>
+            <th>@Html.DisplayNameFor(model => model.Marca)</th>
+            <th>@Html.DisplayNameFor(model => model.Ano)</th> 
+            <th>@Html.DisplayNameFor(model => model.Quilometragem)</th> 
+            <th>@Html.DisplayNameFor(model => model.Preco)</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Modelo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Marca)</td>
+                <td>@Html.DisplayFor(modelItem => item.Ano)</td> 
+                <td>@Html.DisplayFor(modelItem => item.Quilometragem)</td> 
+                <td class="text-success fw-bold">@item.Preco.ToString("C2")</td> 
+                
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                    
+                    @* --- SEGURANÇA: Proteção de botões administrativos (Editar/Excluir) --- *@
+                    @if (User.IsInRole("Admin")) 
+                    {
+                        <span>|</span>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a> 
+                        <span>|</span>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                    }
+                    
+                    <a asp-controller="Vendas" asp-action="Create" asp-route-veiculoId="@item.Id" class="btn btn-sm btn-success">Comprar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

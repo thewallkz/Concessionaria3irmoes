@@ -1,0 +1,49 @@
+/* _content/Concessionaria3irmoes/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-b24vqtpghe] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-b24vqtpghe] {
+  color: #0077cc;
+}
+
+.btn-primary[b-b24vqtpghe] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-b24vqtpghe], .nav-pills .show > .nav-link[b-b24vqtpghe] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-b24vqtpghe] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-b24vqtpghe] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-b24vqtpghe] {
+  box-shadow: 0 .25rem .75rem rgba(92, 92, 92, 0.637);
+}
+
+button.accept-policy[b-b24vqtpghe] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-b24vqtpghe] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var activePage = ViewData["ActivePage"] as string;
+}
+
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <a class="nav-link @(activePage == "Index" ? "active" : "")" asp-page="./Index">Perfil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(activePage == "Email" ? "active" : "")" asp-page="./Email">E-mail</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(activePage == "ChangePassword" ? "active" : "")" asp-page="./ChangePassword">Senha</a>
+    </li>
+    @if (hasExternalLogins)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(activePage == "ExternalLogins" ? "active" : "")" asp-page="./ExternalLogins">Login Externo</a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link @(activePage == "TwoFactorAuthentication" ? "active" : "")" asp-page="./TwoFactorAuthentication">Autenticação em 2 Fatores</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(activePage == "PersonalData" ? "active" : "")" asp-page="./PersonalData">Dados Pessoais</a>
+    </li>
+</ul>
