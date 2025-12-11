@@ -29,3 +29,8 @@ O sistema permite a gestão completa de veículos, clientes e vendas, com contro
 3. **Restaurar os pacotes** necessários:
    ```bash
    dotnet restore
+## Organizacao
+### Equipe
+- Wilyan - Views
+- Felipe - Controllers
+- Bruno - Models
