@@ -22,21 +22,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Veiculos" asp-action="Index">Veículos</a>
+                            <a class="nav-link text-white" asp-controller="Veiculos" asp-action="Index">Veículos</a>
                         </li>
 
                         @* --- ÁREA RESTRITA: Menus de Gestão (Clientes/Vendas) só aparecem para Admin --- *@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Clientes" asp-action="Index">Gestão de
+                                <a class="nav-link text-white" asp-controller="Clientes" asp-action="Index">Gestão de
                                     Clientes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Vendas" asp-action="Index">Relatório de
+                                <a class="nav-link text-white" asp-controller="Vendas" asp-action="Index">Relatório de
                                     Vendas</a>
                             </li>
                         }
