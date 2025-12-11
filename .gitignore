@@ -1,0 +1,79 @@
+# .gitignore for a C# / ASP.NET / web project
+
+# Visual Studio / .NET
+.vs/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Build folders
+[Bb]in/
+[Oo]bj/
+
+# Rider
+.idea/
+
+# Visual Studio Code - keep important workspace files if needed
+.vscode/
+
+# NuGet packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Compiled files
+*.dll
+*.exe
+*.so
+*.dylib
+*.pdb
+
+# Publish output
+publish/
+*.Publish.xml
+*.azurePubxml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+*.rsuser
+*.userprefs
+
+# IIS Express
+/.vs/
+/.vs/*
+iisexpress/
+
+# Dotnet local cache
+.nuget/
+
+# Node.js / front-end
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.*
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Temporary files
+*.tmp
+*.temp
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# End of file
