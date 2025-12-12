@@ -28,7 +28,6 @@ O sistema permite a gestão completa de veículos, clientes e vendas, com contro
 2. Abrir o terminal na pasta raiz do projeto `Concessionaria3irmoes`.
 3. **Restaurar os pacotes** necessários:
    ```bash
-   dotnet restore
    dotnet watch
 ## Organizacao
 ### Equipe
