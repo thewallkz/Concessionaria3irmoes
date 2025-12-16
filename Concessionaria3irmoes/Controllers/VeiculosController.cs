@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Concessionaria3irmoes.Data;
 using Concessionaria3irmoes.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace Concessionaria3irmoes.Controllers
 {
@@ -17,10 +19,12 @@ namespace Concessionaria3irmoes.Controllers
     public class VeiculosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public VeiculosController(ApplicationDbContext context)
+        public VeiculosController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Veiculos
@@ -49,12 +53,13 @@ namespace Concessionaria3irmoes.Controllers
             }
 
             var veiculoModel = await _context.Veiculos
+                .Include(v => v.Fotos)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (veiculoModel == null)
             {
                 return NotFound();
             }
-
             return View(veiculoModel);
         }
 
@@ -72,16 +77,47 @@ namespace Concessionaria3irmoes.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("Id,Modelo,Marca,Preco,Motor,Potencia,Quilometragem,Ano,Vendido")] VeiculoModel veiculoModel)
+        public async Task<IActionResult> Create(VeiculoModel veiculo)
         {
             if (ModelState.IsValid)
             {
-                veiculoModel.Vendido = false;
-                _context.Add(veiculoModel);
+                // Lógica das Fotos
+                if (veiculo.FotosUpload != null && veiculo.FotosUpload.Count > 0)
+                {
+                    // Validação: Máximo 5 fotos
+                    if (veiculo.FotosUpload.Count > 5)
+                    {
+                        ModelState.AddModelError("", "Você pode enviar no máximo 5 fotos.");
+                        return View(veiculo);
+                    }
+
+                    string pastaDestino = Path.Combine(_webHostEnvironment.WebRootPath, "imagens_veiculos");
+                    
+                    // Cria a pasta se não existir
+                    if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
+
+                    foreach (var arquivo in veiculo.FotosUpload)
+                    {
+                        // Gera nome único para não substituir fotos iguais (Ex: guid_nome.jpg)
+                        string nomeArquivo = Guid.NewGuid().ToString() + "_" + arquivo.FileName;
+                        string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
+
+                        // Salva o arquivo na pasta
+                        using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                        {
+                            await arquivo.CopyToAsync(stream);
+                        }
+
+                        // Adiciona na lista do objeto para salvar no banco
+                        veiculo.Fotos.Add(new VeiculoFoto { CaminhoArquivo = nomeArquivo });
+                    }
+                }
+
+                _context.Add(veiculo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(veiculoModel);
+            return View(veiculo);
         }
 
         // GET: Veiculos/Edit/5

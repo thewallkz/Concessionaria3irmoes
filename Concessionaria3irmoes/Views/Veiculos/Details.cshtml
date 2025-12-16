@@ -8,6 +8,46 @@
 
 <div>
     <hr />
+
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            @if (Model.Fotos != null && Model.Fotos.Any())
+            {
+                <div id="carouselVeiculo" class="carousel slide border rounded shadow-sm" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        @for (int i = 0; i < Model.Fotos.Count; i++)
+                        {
+                            <button type="button" data-bs-target="#carouselVeiculo" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i+1)"></button>
+                        }
+                    </div>
+
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.Fotos.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="~/imagens_veiculos/@Model.Fotos[i].CaminhoArquivo" class="d-block w-100" alt="Foto do Veículo" style="height: 450px; object-fit: cover;">
+                            </div>
+                        }
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselVeiculo" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselVeiculo" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center">
+                    <p class="mb-0">Sem fotos disponíveis para este veículo.</p>
+                </div>
+            }
+        </div>
+    </div>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Modelo)
@@ -68,6 +108,5 @@
         <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a>
     }
 
-    <a asp-controller="Vendas" asp-action="Create" asp-route-veiculoId="@Model?.Id" class="btn btn-success">Comprar
-        Agora</a>
+    <a asp-controller="Vendas" asp-action="Create" asp-route-veiculoId="@Model?.Id" class="btn btn-success">Comprar Agora</a>
 </div>

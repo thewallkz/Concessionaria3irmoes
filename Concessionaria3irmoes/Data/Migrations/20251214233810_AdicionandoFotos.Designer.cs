@@ -3,6 +3,7 @@ using System;
 using Concessionaria3irmoes.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concessionaria3irmoes.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214233810_AdicionandoFotos")]
+    partial class AdicionandoFotos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
@@ -122,14 +125,8 @@ namespace Concessionaria3irmoes.Data.Migrations
                     b.Property<DateTime>("DataVenda")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Desconto")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("ValorFinal")
                         .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("ValorOriginal")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VeiculoId")

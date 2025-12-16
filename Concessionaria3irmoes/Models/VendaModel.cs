@@ -9,6 +9,8 @@ namespace Concessionaria3irmoes.Models
     {
         public int Id { get; set; }
         public DateTime DataVenda { get; set; }
+        public decimal ValorOriginal { get; set; }
+        public decimal Desconto { get; set; }
         public decimal ValorFinal { get; set; }
 
     // Relacionamentos

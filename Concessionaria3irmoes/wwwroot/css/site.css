@@ -2,6 +2,8 @@
 body {
     background-color: #f4f4f4;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    margin-bottom: 60px;
 }
 
 .vitrine-header {
@@ -78,4 +80,21 @@ body {
     color: #555;
     font-size: 1.1rem;
     font-weight: bold;
+}
+body {
+    color: #000000 !important; /* Força o texto a ser PRETO puro */
+}
+
+a {
+    text-decoration: none; /* Tira o sublinhado dos links pra ficar mais limpo */
+}
+/* Força todos os links do menu a serem brancos */
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+}
+
+/* Garante que o botão de sair fique branco também */
+.navbar-nav button.btn-link {
+    color: #ffffff !important;
+    text-decoration: none;
 }

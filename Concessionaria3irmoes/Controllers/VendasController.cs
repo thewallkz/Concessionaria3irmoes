@@ -29,122 +29,120 @@ namespace Concessionaria3irmoes.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Vendas.Include(v => v.Cliente).Include(v => v.Veiculo);
-            return View(await applicationDbContext.ToListAsync());
+            var vendas = _context.Vendas
+                .Include(v => v.Cliente)
+                .Include(v => v.Veiculo);
+            return View(await vendas.ToListAsync());
         }
 
         // GET: Vendas/Details/5
         // Mostra os detalhes de uma venda específica.
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Details(int? id)
+       public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var vendaModel = await _context.Vendas
                 .Include(v => v.Cliente)
                 .Include(v => v.Veiculo)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
+
+            if (vendaModel == null) return NotFound();
 
             return View(vendaModel);
         }
 
        
        // GET: Vendas/Create
-public IActionResult Create()
-{
-    // 1. CARREGAR CLIENTES: Usamos o "Nome" para o texto visível.
-    ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome");
-
-    
-    // 2. CARREGAR VEÍCULOS: Criamos um texto descritivo mais completo para o usuário.
-    var veiculosParaLista = _context.Veiculos
-        .Select(v => new
+        public async Task<IActionResult> Create(int? veiculoId)
         {
-            // O valor real que será salvo no banco
-            Id = v.Id, 
-            
-            // O texto formatado que o usuário verá: Marca Modelo (Ano) - R$ Preço
-            DescricaoCompleta = v.Marca + " " + v.Modelo + " (" + v.Ano + ") - R$ " + v.Preco.ToString("N0")
-        })
-        .ToList();
+            if (veiculoId == null)
+            {
+                return BadRequest("É necessário escolher um veículo para iniciar a venda.");
+            }
 
-    // Cria a SelectList para a View usando o texto formatado.
-    ViewData["VeiculoId"] = new SelectList(veiculosParaLista, "Id", "DescricaoCompleta");
+            var veiculo = await _context.Veiculos.FindAsync(veiculoId);
 
-    // Envia um objeto VendaModel com a data atual para preencher o campo DataVenda na View
-    var venda = new VendaModel { DataVenda = DateTime.Now };
-    return View(venda);
-}
+            // Validação: Carro existe? Já foi vendido?
+            if (veiculo == null || veiculo.Vendido)
+            {
+                return BadRequest("Este veículo não está disponível ou já foi vendido.");
+            }
+
+            // Prepara a venda com os valores iniciais
+            var venda = new VendaModel
+            {
+                VeiculoId = veiculo.Id,
+                ValorOriginal = veiculo.Preco,
+                ValorFinal = veiculo.Preco, // Começa igual ao original
+                Desconto = 0,
+                DataVenda = DateTime.Now
+            };
+
+            // ViewBags para exibir dados na tela
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome");
+            ViewData["VeiculoNome"] = $"{veiculo.Marca} {veiculo.Modelo} ({veiculo.Ano})"; 
+
+            return View(venda);
+        }
 
         // POST: Vendas/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataVenda,ValorFinal,ClienteId,VeiculoId")] VendaModel vendaModel)
+        public async Task<IActionResult> Create(VendaModel venda)
         {
+            // Busca o veículo novamente para garantir segurança
+            var veiculo = await _context.Veiculos.FindAsync(venda.VeiculoId);
+
+            if (veiculo == null) return NotFound();
+
+            // REGRA DE NEGÓCIO: Recalcular valores no Back-end
+            venda.ValorOriginal = veiculo.Preco;
+            venda.ValorFinal = venda.ValorOriginal - venda.Desconto;
+
+            // Validação 1: Valor negativo
+            if (venda.ValorFinal < 0)
+            {
+                ModelState.AddModelError("Desconto", "O desconto não pode ser maior que o valor do veículo.");
+            }
+
+            // Validação 2: Veículo já vendido (concorrência)
+            if (veiculo.Vendido)
+            {
+                ModelState.AddModelError("", "Este veículo acabou de ser vendido por outro vendedor.");
+            }
+
             if (ModelState.IsValid)
             {
-                // 1. Busca o veículo no banco
-                var veiculo = await _context.Veiculos.FindAsync(vendaModel.VeiculoId);
+                // 1. Salva a Venda
+                _context.Add(venda);
 
-                // 2. Verifica se ele existe e se já não foi vendido (segurança)
-                if (veiculo == null)
-                {
-                    ModelState.AddModelError("", "Veículo não encontrado.");
-                }
-                else if (veiculo.Vendido)
-                {
-                    ModelState.AddModelError("", "Desculpe, este veículo já foi vendido por outro cliente agora mesmo!");
-                }
-                else
-                {
-                    // 3. TUDO CERTO: Marca como vendido
-                    veiculo.Vendido = true;
-                    _context.Update(veiculo); // Atualiza o carro
+                // 2. Baixa no Estoque
+                veiculo.Vendido = true;
+                _context.Update(veiculo);
 
-                    // 4. Salva a Venda
-                    _context.Add(vendaModel);
-                    await _context.SaveChangesAsync();
-                    
-                    // Sucesso: Volta para a Home ou Lista de Veículos
-                    return RedirectToAction("Index", "Veiculos"); 
-                }
+                await _context.SaveChangesAsync();
+                
+                // Redireciona para a lista de veículos após vender
+                return RedirectToAction("Index", "Veiculos");
             }
-            // Se algo deu errado, recarrega as listas
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome", vendaModel.ClienteId);
-            
-            // Recarrega a lista bonita de novo
-             var veiculosParaLista = _context.Veiculos
-                .Where(v => !v.Vendido)
-                .Select(v => new { Id = v.Id, DescricaoCompleta = $"{v.Marca} {v.Modelo} - {v.Preco:C2}" })
-                .ToList();
-            ViewData["VeiculoId"] = new SelectList(veiculosParaLista, "Id", "DescricaoCompleta", vendaModel.VeiculoId);
-            
-            return View(vendaModel);
+
+            // Se der erro, recarrega os dados para a tela não quebrar
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome", venda.ClienteId);
+            ViewData["VeiculoNome"] = $"{veiculo.Marca} {veiculo.Modelo}";
+            return View(venda);
         }
 
         // GET: Vendas/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var vendaModel = await _context.Vendas.FindAsync(id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", vendaModel.ClienteId);
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculos, "Id", "Id", vendaModel.VeiculoId);
+            if (vendaModel == null) return NotFound();
+
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome", vendaModel.ClienteId);
             return View(vendaModel);
         }
 
@@ -153,12 +151,9 @@ public IActionResult Create()
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataVenda,ValorFinal,ClienteId,VeiculoId")] VendaModel vendaModel)
+        public async Task<IActionResult> Edit(int id, VendaModel vendaModel)
         {
-            if (id != vendaModel.Id)
-            {
-                return NotFound();
-            }
+            if (id != vendaModel.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -169,19 +164,12 @@ public IActionResult Create()
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VendaModelExists(vendaModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!VendaModelExists(vendaModel.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", vendaModel.ClienteId);
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculos, "Id", "Id", vendaModel.VeiculoId);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Nome", vendaModel.ClienteId);
             return View(vendaModel);
         }
 
@@ -190,19 +178,14 @@ public IActionResult Create()
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var vendaModel = await _context.Vendas
                 .Include(v => v.Cliente)
                 .Include(v => v.Veiculo)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
+
+            if (vendaModel == null) return NotFound();
 
             return View(vendaModel);
         }
@@ -215,15 +198,23 @@ public IActionResult Create()
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vendaModel = await _context.Vendas.FindAsync(id);
+            
             if (vendaModel != null)
             {
+                // REGRA DE ESTORNO: Se apagar a venda, o carro volta para o estoque
+                var veiculo = await _context.Veiculos.FindAsync(vendaModel.VeiculoId);
+                if (veiculo != null)
+                {
+                    veiculo.Vendido = false; // Devolve para a loja
+                    _context.Update(veiculo);
+                }
+
                 _context.Vendas.Remove(vendaModel);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool VendaModelExists(int id)
         {
             return _context.Vendas.Any(e => e.Id == id);

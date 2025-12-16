@@ -1,0 +1,61 @@
+@page
+@using Concessionaria3irmoes.Areas.Identity.Pages.Account.Manage
+@model EnableAuthenticatorModel
+@{
+    ViewData["Title"] = "Configurar Autenticador";
+   
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fa fa-lock"></i> @ViewData["Title"]</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Para aumentar a segurança da sua conta, siga os passos abaixo:</p>
+                    
+                    <ol class="list-group list-group-numbered mb-4">
+                        <li class="list-group-item">
+                            Baixe um aplicativo de autenticação de dois fatores no seu celular, como o 
+                            <strong>Microsoft Authenticator</strong> ou o <strong>Google Authenticator</strong>.
+                        </li>
+                        <li class="list-group-item">
+                            <p class="mb-2">No aplicativo, escolha a opção <strong>"Inserir chave de configuração"</strong> (ou "Enter setup key") e digite o código abaixo:</p>
+                            
+                            <div class="alert alert-warning text-center font-monospace fw-bold fs-4 p-3">
+                                @Model.SharedKey
+                            </div>
+                            
+                            <small class="text-muted"><i class="fa fa-info-circle"></i> O código não diferencia maiúsculas de minúsculas e os espaços não importam.</small>
+                        </li>
+                        <li class="list-group-item">
+                            Após inserir a chave no celular, o aplicativo vai gerar um código numérico de 6 dígitos. Digite esse código no campo abaixo para confirmar.
+                        </li>
+                    </ol>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <form id="send-code" method="post">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Code" class="form-control" autocomplete="off" placeholder="Ex: 123456" />
+                                    <label asp-for="Input.Code">Código de Verificação (do App)</label>
+                                    <span asp-validation-for="Input.Code" class="text-danger"></span>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">Verificar e Ativar</button>
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger mt-2"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

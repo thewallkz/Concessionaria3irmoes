@@ -4,51 +4,71 @@
     ViewData["Title"] = "Veículos Disponíveis";
 }
 
-<h1>Veículos Disponíveis</h1>
+<div class="container mt-4">
+    <h1>Veículos Disponíveis</h1>
 
-@* --- SEGURANÇA: Botão de cadastro visível apenas para Admins --- *@
-@if (User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-lg btn-primary">➕ Novo Veículo</a>
-    </p>
-}
+    @* --- SEGURANÇA: Botão de cadastro visível apenas para Admins --- *@
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-lg btn-primary mb-4">➕ Novo Veículo</a>
+        </p>
+    }
 
-<table class="table table-hover table-striped shadow-sm">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Modelo)</th>
-            <th>@Html.DisplayNameFor(model => model.Marca)</th>
-            <th>@Html.DisplayNameFor(model => model.Ano)</th> 
-            <th>@Html.DisplayNameFor(model => model.Quilometragem)</th> 
-            <th>@Html.DisplayNameFor(model => model.Preco)</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="row">
         @foreach (var item in Model) {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Modelo)</td>
-                <td>@Html.DisplayFor(modelItem => item.Marca)</td>
-                <td>@Html.DisplayFor(modelItem => item.Ano)</td> 
-                <td>@Html.DisplayFor(modelItem => item.Quilometragem)</td> 
-                <td class="text-success fw-bold">@item.Preco.ToString("C2")</td> 
-                
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm hover-effect">
                     
-                    @* --- SEGURANÇA: Proteção de botões administrativos (Editar/Excluir) --- *@
-                    @if (User.IsInRole("Admin")) 
-                    {
-                        <span>|</span>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a> 
-                        <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
-                    }
-                    
-                    <a asp-controller="Vendas" asp-action="Create" asp-route-veiculoId="@item.Id" class="btn btn-sm btn-success">Comprar</a>
-                </td>
-            </tr>
+                    <div style="height: 200px; overflow: hidden;" class="bg-light d-flex align-items-center justify-content-center position-relative">
+                        @if (item.Fotos != null && item.Fotos.Any())
+                        {
+                            <img src="~/imagens_veiculos/@item.Fotos[0].CaminhoArquivo" class="card-img-top" alt="Foto do @item.Modelo" style="width: 100%; height: 100%; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <span class="text-muted"><i class="fa fa-camera"></i> Sem foto</span>
+                        }
+                        
+                        <div class="position-absolute bottom-0 end-0 bg-success text-white px-2 py-1 m-2 rounded fw-bold">
+                            @item.Preco.ToString("C2")
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@item.Marca @item.Modelo</h5>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-secondary">@item.Ano</span>
+                            <span class="text-muted small">@item.Quilometragem km</span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-top-0">
+                        <div class="d-grid gap-2">
+                            <a asp-controller="Vendas" asp-action="Create" asp-route-veiculoId="@item.Id" class="btn btn-success fw-bold">
+                                Comprar Agora
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                                Ver Detalhes
+                            </a>
+                        </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="text-warning text-decoration-none fw-bold small">
+                                    ✏️ Editar
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger text-decoration-none fw-bold small">
+                                    🗑️ Excluir
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
