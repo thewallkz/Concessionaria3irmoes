@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Concessionaria3irmoes")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b78ba695a36f20353ae9de961c273ef58063d49")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8f56053a95c5562420c9a4416d45fd7350b572e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Concessionaria3irmoes")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Concessionaria3irmoes")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

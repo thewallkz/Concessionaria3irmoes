@@ -1,27 +1,30 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Concessionaria3irmoes.Data;
 using Concessionaria3irmoes.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Concessionaria3irmoes.Controllers
 {
     /// Controlador responsável pelo catálogo de veículos.
     /// Gerencia a exibição para clientes e a administração (CRUD) para funcionários.
-    [Authorize]// Exige login para acessar qualquer parte, mas as Roles definem o nível de acesso abaixo.
+    [Authorize] // Exige login para acessar qualquer parte, mas as Roles definem o nível de acesso abaixo.
     public class VeiculosController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public VeiculosController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public VeiculosController(
+            ApplicationDbContext context,
+            IWebHostEnvironment webHostEnvironment
+        )
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -32,14 +35,21 @@ namespace Concessionaria3irmoes.Controllers
         /// LÓGICA DE NEGÓCIO: Se for Admin, vê tudo. Se for Cliente, vê apenas os não vendidos.
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin"))// Admin: Visualiza todo o histórico, inclusive carros já vendidos (controle de estoque)
+            if (User.IsInRole("Admin"))
             {
-                return View(await _context.Veiculos.ToListAsync());
+                // ADICIONADO: .Include(v => v.Fotos)
+                // Isso obriga o banco a trazer as fotos junto com o carro
+                return View(await _context.Veiculos.Include(v => v.Fotos).ToListAsync());
             }
             else
             {
-                // Cliente: Visualiza apenas carros disponíveis para compra (!v.Vendido)
-                return View(await _context.Veiculos.Where(v => !v.Vendido).ToListAsync());
+                // ADICIONADO: .Include(v => v.Fotos) aqui também
+                return View(
+                    await _context
+                        .Veiculos.Include(v => v.Fotos)
+                        .Where(v => !v.Vendido)
+                        .ToListAsync()
+                );
             }
         }
 
@@ -52,8 +62,8 @@ namespace Concessionaria3irmoes.Controllers
                 return NotFound();
             }
 
-            var veiculoModel = await _context.Veiculos
-                .Include(v => v.Fotos)
+            var veiculoModel = await _context
+                .Veiculos.Include(v => v.Fotos)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (veiculoModel == null)
@@ -91,10 +101,14 @@ namespace Concessionaria3irmoes.Controllers
                         return View(veiculo);
                     }
 
-                    string pastaDestino = Path.Combine(_webHostEnvironment.WebRootPath, "imagens_veiculos");
-                    
+                    string pastaDestino = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        "imagens_veiculos"
+                    );
+
                     // Cria a pasta se não existir
-                    if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
+                    if (!Directory.Exists(pastaDestino))
+                        Directory.CreateDirectory(pastaDestino);
 
                     foreach (var arquivo in veiculo.FotosUpload)
                     {
@@ -139,28 +153,55 @@ namespace Concessionaria3irmoes.Controllers
         }
 
         // POST: Veiculos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Modelo,Marca,Preco,Motor,Potencia,Quilometragem,Ano,Vendido")] VeiculoModel veiculoModel)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Modelo,Marca,Preco,Motor,Potencia,Quilometragem,Ano,Vendido")]
+                VeiculoModel veiculoFormulario
+        )
         {
-            if (id != veiculoModel.Id)
+            if (id != veiculoFormulario.Id)
             {
                 return NotFound();
             }
+
+            // 1. Remove validações de campos que não estão neste formulário de edição
+            // Isso impede que o ModelState falhe porque a lista de fotos veio vazia/nula
+            ModelState.Remove("Fotos");
+            ModelState.Remove("FotosUpload");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(veiculoModel);
+                    // 2. Busca o veículo ORIGINAL do banco de dados (incluindo dados que não queremos perder)
+                    var veiculoBanco = await _context.Veiculos.FindAsync(id);
+
+                    if (veiculoBanco == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // 3. Atualiza manualmente apenas os campos permitidos
+                    veiculoBanco.Modelo = veiculoFormulario.Modelo;
+                    veiculoBanco.Marca = veiculoFormulario.Marca;
+                    veiculoBanco.Preco = veiculoFormulario.Preco;
+                    veiculoBanco.Motor = veiculoFormulario.Motor;
+                    veiculoBanco.Potencia = veiculoFormulario.Potencia;
+                    veiculoBanco.Quilometragem = veiculoFormulario.Quilometragem;
+                    veiculoBanco.Ano = veiculoFormulario.Ano;
+                    veiculoBanco.Vendido = veiculoFormulario.Vendido;
+
+                    // Nota: Não mexemos em veiculoBanco.Fotos, então as imagens antigas são preservadas!
+
+                    _context.Update(veiculoBanco);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VeiculoModelExists(veiculoModel.Id))
+                    if (!VeiculoModelExists(veiculoFormulario.Id))
                     {
                         return NotFound();
                     }
@@ -171,7 +212,8 @@ namespace Concessionaria3irmoes.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(veiculoModel);
+
+            return View(veiculoFormulario);
         }
 
         // GET: Veiculos/Delete/5
@@ -184,8 +226,7 @@ namespace Concessionaria3irmoes.Controllers
                 return NotFound();
             }
 
-            var veiculoModel = await _context.Veiculos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var veiculoModel = await _context.Veiculos.FirstOrDefaultAsync(m => m.Id == id);
             if (veiculoModel == null)
             {
                 return NotFound();

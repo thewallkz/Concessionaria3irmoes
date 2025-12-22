@@ -6968,19 +6968,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\w\\.nuget\\packages\\": {}
+    "C:\\Users\\Lipe\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\w\\Downloads\\Concessionaria3irmoes\\Concessionaria3irmoes\\Concessionaria3irmoes.csproj",
+      "projectUniqueName": "C:\\Users\\Lipe\\Downloads\\Concessionaria3irmoes-main\\Concessionaria3irmoes\\Concessionaria3irmoes.csproj",
       "projectName": "Concessionaria3irmoes",
-      "projectPath": "C:\\Users\\w\\Downloads\\Concessionaria3irmoes\\Concessionaria3irmoes\\Concessionaria3irmoes.csproj",
-      "packagesPath": "C:\\Users\\w\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\w\\Downloads\\Concessionaria3irmoes\\Concessionaria3irmoes\\obj\\",
+      "projectPath": "C:\\Users\\Lipe\\Downloads\\Concessionaria3irmoes-main\\Concessionaria3irmoes\\Concessionaria3irmoes.csproj",
+      "packagesPath": "C:\\Users\\Lipe\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Lipe\\Downloads\\Concessionaria3irmoes-main\\Concessionaria3irmoes\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\w\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Lipe\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6998,13 +6998,7 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -7046,24 +7040,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.22, 8.0.22]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.22, 8.0.22]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.22, 8.0.22]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.22, 8.0.22]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -7072,7 +7048,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

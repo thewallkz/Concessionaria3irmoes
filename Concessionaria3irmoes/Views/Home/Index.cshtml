@@ -5,42 +5,46 @@
 }
 
 <div id="carrosselVeiculos" class="carousel slide mb-5" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="/imagens/race-car-24.gif" class="d-block w-100" alt="Carro de Luxo 1" style="height: 500px; object-fit: cover;">
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
-        <h5 style="color: white !important;">Bem-vindo à Concessionária 3 Irmãos</h5>
-        <p>Os melhores veículos, as melhores condições.</p>
-      </div>
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carrosselVeiculos" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
-    <div class="carousel-item">
-      <img src="/imagens/1920x1080-download-free-car-images.jpg" class="d-block w-100" alt="Carro Esportivo 2" style="height: 500px; object-fit: cover;">
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
-        <h5 style="color: white !important;">Velocidade e Conforto</h5>
-        <p>Encontre o carro dos seus sonhos hoje mesmo.</p>
-      </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/imagens/race-car-24.gif" class="d-block w-100" alt="Carro de Luxo 1"
+                style="height: 500px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
+                <h5 style="color: white !important;">Bem-vindo à Concessionária 3 Irmãos</h5>
+                <p>Os melhores veículos, as melhores condições.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/imagens/1920x1080-download-free-car-images.jpg" class="d-block w-100" alt="Carro Esportivo 2"
+                style="height: 500px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
+                <h5 style="color: white !important;">Velocidade e Conforto</h5>
+                <p>Encontre o carro dos seus sonhos hoje mesmo.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/imagens/g63.gif" class="d-block w-100" alt="SUV Familiar 3"
+                style="height: 500px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
+                <h5 style="color: white !important;">Para Toda a Família</h5>
+                <p>Espaço e segurança para quem você mais ama.</p>
+            </div>
+        </div>
     </div>
-    <div class="carousel-item">
-      <img src="/imagens/g63.gif" class="d-block w-100" alt="SUV Familiar 3" style="height: 500px; object-fit: cover;">
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded text-white">
-        <h5 style="color: white !important;">Para Toda a Família</h5>
-        <p>Espaço e segurança para quem você mais ama.</p>
-      </div>
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carrosselVeiculos" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Anterior</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carrosselVeiculos" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Próximo</span>
-  </button>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carrosselVeiculos" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carrosselVeiculos" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+    </button>
 </div>
 
 <div class="container mb-5">
@@ -56,22 +60,36 @@
             {
                 <div class="col">
                     <div class="card h-100 border-0 shadow-sm hover-card">
-                        <img src="https://via.placeholder.com/400x250?text=@carro.Marca+@carro.Modelo" class="card-img-top" alt="@carro.Modelo" style="height: 200px; object-fit: cover;">
-                        
-                        <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 small fw-bold rounded">DESTAQUE</span>
+
+                        @if (carro.Fotos != null && carro.Fotos.Any())
+                        {
+                            var nomeFoto = carro.Fotos.First().CaminhoArquivo;
+                            <img src="~/imagens_veiculos/@nomeFoto" class="card-img-top" alt="@carro.Modelo"
+                                style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/400x250?text=@carro.Marca+@carro.Modelo" class="card-img-top"
+                                alt="Sem Foto" style="height: 200px; object-fit: cover;">
+                        }
+
+                        <span
+                            class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 small fw-bold rounded">DESTAQUE</span>
 
                         <div class="card-body text-center">
-                            <h5 class="card-title fw-bold text-uppercase mb-1" style="font-size: 0.9rem; color: #888;">@carro.Marca</h5>
+                            <h5 class="card-title fw-bold text-uppercase mb-1" style="font-size: 0.9rem; color: #888;">
+                                @carro.Marca</h5>
                             <h4 class="card-text fw-bold mb-3" style="color: #d63384;">@carro.Modelo</h4>
-                            
+
                             <p class="card-text small text-muted mb-3">
-                                <i class="bi bi-speedometer2"></i> @carro.Motor | 
+                                <i class="bi bi-speedometer2"></i> @carro.Motor |
                                 <i class="bi bi-fuel-pump"></i> @carro.Potencia
                             </p>
 
                             <h5 class="fw-bold mb-3">R$ @carro.Preco.ToString("N2")</h5>
 
-                            <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@carro.Id" class="btn btn-outline-dark w-100 rounded-0">VER DETALHES</a>
+                            <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@carro.Id"
+                                class="btn btn-outline-dark w-100 rounded-0">VER DETALHES</a>
                         </div>
                     </div>
                 </div>
@@ -96,7 +114,7 @@
     <hr class="w-25 mx-auto mb-5 text-primary" style="height: 3px; opacity: 1;">
 
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4 text-center">
-        
+
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
                 <img src="/imagens/logo-pix-icone-1024.png" class="card-img-top p-3 w-50 mx-auto" alt="Ícone Pix">
@@ -138,8 +156,9 @@
         </div>
 
         <div class="col">
-            <div class="card h-100 shadow-sm border-0 text-white bg-dark"> 
-                <img src="/imagens/seguranca.png" class="card-img-top p-3 w-50 mx-auto" alt="Ícone Seguro" style="filter: invert(1);">
+            <div class="card h-100 shadow-sm border-0 text-white bg-dark">
+                <img src="/imagens/seguranca.png" class="card-img-top p-3 w-50 mx-auto" alt="Ícone Seguro"
+                    style="filter: invert(1);">
                 <div class="card-body">
                     <h5 class="card-title fw-bold">Seguro e Confiança</h5>
                     <p class="card-text small">Garantimos tranquilidade total na sua compra.</p>
